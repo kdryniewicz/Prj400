@@ -3,7 +3,7 @@
 // Enum to specify the direction is heading.
 public enum Direction
 {
-    North, East, South, West,
+    NorthWest, North, NorthEast, East, SouthEast, South, SouthWest, West
 }
 
 public class Corridor
