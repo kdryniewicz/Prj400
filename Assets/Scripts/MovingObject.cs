@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Completed
+namespace ProceduralGeneration
 {
 	//The abstract keyword enables you to create classes and class members that are incomplete and must be implemented in a derived class.
 	public abstract class MovingObject : MonoBehaviour
 	{
 		//public float moveTime = 0f;			//Time it will take object to move, in seconds.
-		public LayerMask blockingLayer;			//Layer on which collision will be checked.
-		
-		
+		public LayerMask blockingLayer;         //Layer on which collision will be checked.
+
+        public float speed =  0.5f;
 		private BoxCollider2D boxCollider; 		//The BoxCollider2D component attached to this object.
 		private Rigidbody2D rb2D;				//The Rigidbody2D component attached to this object.
 		//private float inverseMoveTime;			//Used to make movement more efficient.
@@ -74,7 +74,7 @@ namespace Completed
 			while(sqrRemainingDistance > float.Epsilon)
 			{
 				//Find a new position proportionally closer to the end, based on the moveTime
-				Vector3 newPostion = Vector3.MoveTowards(rb2D.position, end, 5f * Time.deltaTime);
+				Vector3 newPostion = Vector3.MoveTowards(rb2D.position, end, speed * Time.deltaTime);
 				
 				//Call MovePosition on attached Rigidbody2D and move it to the calculated position.
 				rb2D.MovePosition (newPostion);

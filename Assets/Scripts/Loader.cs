@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Completed
+namespace ProceduralGeneration
 {	
 	public class Loader : MonoBehaviour 
 	{

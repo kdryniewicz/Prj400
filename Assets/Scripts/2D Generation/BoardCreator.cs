@@ -6,20 +6,24 @@ public class BoardCreator : MonoBehaviour
     // The type of tile that will be laid in a specific position.
     public enum TileType
     {
-        Wall, Floor,
+        Wall, Floor, Enemy, Player
     }
 
 
-    public int columns = 100;                                 // The number of columns on the board (how wide it will be).
-    public int rows = 100;                                    // The number of rows on the board (how tall it will be).
-    public IntRange numRooms = new IntRange(15, 20);         // The range of the number of rooms there can be.
-    public IntRange roomWidth = new IntRange(3, 10);         // The range of widths rooms can have.
-    public IntRange roomHeight = new IntRange(3, 10);        // The range of heights rooms can have.
-    public IntRange corridorLength = new IntRange(6, 10);    // The range of lengths corridors between rooms can have.
-    public GameObject[] floorTiles;                           // An array of floor tile prefabs.
-    public GameObject[] wallTiles;                            // An array of wall tile prefabs.
-    public GameObject[] outerWallTiles;                       // An array of outer wall tile prefabs.
+    public int columns = 100;                                   // The number of columns on the board (how wide it will be).
+    public int rows = 100;                                      // The number of rows on the board (how tall it will be).
+    public IntRange numRooms = new IntRange(15, 20);            // The range of the number of rooms there can be.
+    public IntRange roomWidth = new IntRange(3, 10);            // The range of widths rooms can have.
+    public IntRange roomHeight = new IntRange(3, 10);           // The range of heights rooms can have.
+    public IntRange corridorLength = new IntRange(6, 10);       // The range of lengths corridors between rooms can have.
+    public IntRange enemiesPerRoom = new IntRange(0, 3);        // The range of enemies that each room can have.
+    public IntRange maxEnemiesForDungeon = new IntRange(8, 12); // The range of enemies that the whole dungeon can have.
+    public GameObject[] floorTiles;                             // An array of floor tile prefabs.
+    public GameObject[] wallTiles;                              // An array of wall tile prefabs.
+    public GameObject[] outerWallTiles;                         // An array of outer wall tile prefabs.
     public GameObject player;
+    public GameObject[] enemies;
+    private int enemiesCreatedCount;
 
     private TileType[][] tiles;                               // A jagged array of tile types representing the board, like a grid.
     private Room[] rooms;                                     // All the rooms that are created for this board.
@@ -42,6 +46,9 @@ public class BoardCreator : MonoBehaviour
         InstantiateTiles();
         InstantiateOuterWalls();
 
+        SpreadEnemiesInRooms();
+        InstantiateEnemies();
+
         CreatePlayer();
     }
 
@@ -59,7 +66,7 @@ public class BoardCreator : MonoBehaviour
         }
     }
 
-    
+
     public void CreatePlayer()
     {
         Vector3 playerPos = new Vector3(rooms[0].xPos, rooms[0].yPos, 0);
@@ -103,11 +110,11 @@ public class BoardCreator : MonoBehaviour
             }
             //if (i == rooms.Length * .5f)
             //{
-                
+
             //}
 
         }
-        
+
     }
 
 
@@ -117,24 +124,65 @@ public class BoardCreator : MonoBehaviour
         for (int i = 0; i < rooms.Length; i++)
         {
             Room currentRoom = rooms[i];
+            float xpos, ypos = 0f;
+            rooms[i].TilePositions = new Vector2[currentRoom.roomWidth + currentRoom.roomHeight];
 
             // ... and for each room go through it's width.
             for (int j = 0; j < currentRoom.roomWidth; j++)
             {
                 int xCoord = currentRoom.xPos + j;
-
+                xpos = xCoord;
                 // For each horizontal tile, go up vertically through the room's height.
                 for (int k = 0; k < currentRoom.roomHeight; k++)
                 {
                     int yCoord = currentRoom.yPos + k;
-
+                    ypos = yCoord;
                     // The coordinates in the jagged array are based on the room's position and it's width and height.
                     tiles[xCoord][yCoord] = TileType.Floor;
+                   
                 }
+                rooms[i].TilePositions[j] = new Vector2(xpos, ypos);
+                //Debug.Log(rooms[i].TilePositions[j]);
             }
         }
     }
 
+    void SpreadEnemiesInRooms()
+    {
+        int totalEnemies = 0;
+
+        //Set total enemies in the dungeon. There will be at least one enemy per each room or max of three enemies for each room.
+        maxEnemiesForDungeon = new IntRange(rooms.Length, rooms.Length * 3);
+        enemiesCreatedCount = maxEnemiesForDungeon.Random;
+
+        //Keeping track of enemies left to spread throughout dungeon.
+        totalEnemies = enemiesCreatedCount;
+
+        // Go through all the rooms...
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            //Room Object to keep track of current room.
+            Room currentRoom = rooms[i];
+
+            //make sure there are enemies to spread out.
+            if(totalEnemies > 0)
+            {
+                //Make sure there aren't any enemies already in the room.
+                if(currentRoom.enemiesInRoom == 0)
+                {
+                    //Set the enemies in room to a random between a range.
+                    currentRoom.enemiesInRoom = enemiesPerRoom.Random;
+                    totalEnemies -= currentRoom.enemiesInRoom;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+   
 
     void SetTilesValuesForCorridors()
     {
@@ -245,6 +293,57 @@ public class BoardCreator : MonoBehaviour
         }
     }
 
+    Vector2 GetRandomPosInRoom(Room r)
+    {
+        Vector2 tempPos = Vector2.zero;
+        if(r != null)
+        {
+            //IntRange randomRange = new IntRange(r.xPos, r.roomWidth);
+
+            //Each room has a range of vector2 values for each tile. Pick one at random, make sure previous enemy doesn't use same value and choose one at random to spawn enemy into.
+            IntRange tileRange = new IntRange(0, r.TilePositions.Length - 1);
+            int index = tileRange.Random;
+            tempPos = new Vector2(r.TilePositions[index].x, r.TilePositions[index].y);
+        }
+        else
+        {
+            Debug.Log("Room object is empty!");
+        }
+
+        return tempPos;
+    }
+
+    void InstantiateEnemies()
+    {
+        foreach (Room currentRoom in rooms)
+        {
+            if(currentRoom.enemiesInRoom > 0)
+            {
+                currentRoom.EnemyPositions = new Vector2[currentRoom.enemiesInRoom];
+
+                for (int i = 0; i < currentRoom.enemiesInRoom; i++)
+                {
+                    Vector2 enemyPos = GetRandomPosInRoom(currentRoom);
+
+                    //This was breaking with J < i check
+                    //Check if the generated position doesn't match a previously generated enemy's position.
+                    for (int j = 0; j < currentRoom.EnemyPositions.Length; j++)
+                    {
+                       //if there is a match, try generating one again.
+                        if(enemyPos == currentRoom.EnemyPositions[j])
+                        {
+                            enemyPos = GetRandomPosInRoom(currentRoom);
+                            j = -1;
+                        }
+                    }
+
+                    InstantiateFromArray(enemies, enemyPos.x, enemyPos.y);
+                    currentRoom.EnemyPositions[i] = enemyPos;
+
+                }
+            }
+        }
+    }
 
     void InstantiateFromArray(GameObject[] prefabs, float xCoord, float yCoord)
     {

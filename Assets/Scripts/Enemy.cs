@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Completed
+namespace ProceduralGeneration
 {
 	//Enemy inherits from MovingObject, our base class for objects that can move, Player also inherits from this.
 	public class Enemy : MovingObject

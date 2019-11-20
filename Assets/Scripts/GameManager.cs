@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-namespace Completed
+namespace ProceduralGeneration
 {
 	using System.Collections.Generic;		//Allows us to use Lists. 
 	using UnityEngine.UI;					//Allows us to use UI.
@@ -10,7 +10,7 @@ namespace Completed
 	public class GameManager : MonoBehaviour
 	{
 		public float levelStartDelay = 2f;						//Time to wait before starting level, in seconds.
-		public float turnDelay = 0.1f;							//Delay between each Player turn.
+		public float turnDelay = 0f;							//Delay between each Player turn.
 		public int playerFoodPoints = 100;						//Starting value for Player food points.
 		public static GameManager instance = null;				//Static instance of GameManager which allows it to be accessed by any other script.
 		[HideInInspector] public bool playersTurn = true;		//Boolean to check if it's players turn, hidden in inspector but public.
@@ -117,10 +117,10 @@ namespace Completed
 		void Update()
 		{
 			//Check that playersTurn or enemiesMoving or doingSetup are not currently true.
-			if(playersTurn || enemiesMoving || doingSetup)
+			//if(playersTurn || enemiesMoving || doingSetup)
 				
-				//If any of these are true, return and do not start MoveEnemies.
-				return;
+			//	//If any of these are true, return and do not start MoveEnemies.
+			//	return;
 			
 			//Start moving enemies.
 			StartCoroutine (MoveEnemies ());

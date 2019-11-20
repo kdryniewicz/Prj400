@@ -7,7 +7,9 @@ public class Room
     public int roomWidth;                     // How many tiles wide the room is.
     public int roomHeight;                    // How many tiles high the room is.
     public Direction enteringCorridor;    // The direction of the corridor that is entering this room.
-
+    public Vector2[] TilePositions;
+    public Vector2[] EnemyPositions;
+    public int enemiesInRoom;
 
     // This is used for the first room.  It does not have a Corridor parameter since there are no corridors yet.
     public void SetupRoom(IntRange widthRange, IntRange heightRange, int columns, int rows)
