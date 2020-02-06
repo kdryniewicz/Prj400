@@ -28,7 +28,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4775391372768030306}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d59e4dfb9c9404b9471de0c983feac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelStartDelay: 2
+  levelStartDelay: 1
   turnDelay: 0.1
   playerFoodPoints: 100
   playersTurn: 1
@@ -60,23 +61,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55165943fd49a4d469fb13db0a5005a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 75
-  rows: 75
+  columns: 100
+  rows: 100
   numRooms:
-    m_Min: 5
-    m_Max: 8
+    m_Min: 6
+    m_Max: 12
   roomWidth:
-    m_Min: 5
+    m_Min: 3
     m_Max: 11
   roomHeight:
     m_Min: 4
-    m_Max: 10
+    m_Max: 14
   corridorLength:
-    m_Min: 5
-    m_Max: 9
+    m_Min: 6
+    m_Max: 10
   enemiesPerRoom:
     m_Min: 1
-    m_Max: 3
+    m_Max: 4
   maxEnemiesForDungeon:
     m_Min: 8
     m_Max: 12
@@ -106,3 +107,33 @@ MonoBehaviour:
   enemies:
   - {fileID: 195068, guid: ebfba08a213d34c46ba2b1947aeaea83, type: 3}
   - {fileID: 161064, guid: 089a2f2c322ea40f9afdfaba0550c6d3, type: 3}
+--- !u!1 &705124857831849692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4775391372768030306}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4775391372768030306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705124857831849692}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 433658}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

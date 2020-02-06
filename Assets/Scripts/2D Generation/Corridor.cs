@@ -3,6 +3,11 @@
 // Enum to specify the direction is heading.
 public enum Direction
 {
+   North, East, South, West
+}
+//Split the direction into two, separate for player checking since it broke the PCG.
+public enum PlayerDir
+{
     NorthWest, North, NorthEast, East, SouthEast, South, SouthWest, West
 }
 
@@ -43,6 +48,8 @@ public class Corridor
 
     public void SetupCorridor(Room room, IntRange length, IntRange roomWidth, IntRange roomHeight, int columns, int rows, bool firstCorridor)
     {
+        Debug.Log("Corridor is made!");
+
         // Set a random direction (a random index from 0 to 3, cast to Direction).
         direction = (Direction)Random.Range(0, 4);
 
@@ -51,20 +58,25 @@ public class Corridor
         // Find the remainder when dividing by 4 (if 2 then 2, if 3 then 3, if 4 then 0, if 5 then 1).
         // Cast this number back to a direction.
         // Overall effect is if the direction was South then that is 2, becomes 4, remainder is 0, which is north.
-        Direction oppositeDirection = (Direction)(((int)room.enteringCorridor + 2) % 4);
-
-        // If this is noth the first corridor and the randomly selected direction is opposite to the previous corridor's direction...
-        if (!firstCorridor && direction == oppositeDirection)
-        {
-            // Rotate the direction 90 degrees clockwise (North becomes East, East becomes South, etc).
+        if(!firstCorridor){
+			Direction oppositeDirection = (Direction)(((int)room.enteringCorridor + 2) % 4);
+			if(direction == oppositeDirection){
+				// Rotate the direction 90 degrees clockwise (North becomes East, East becomes South, etc).
             // This is a more broken down version of the opposite direction operation above but instead of adding 2 we're adding 1.
             // This means instead of rotating 180 (the opposite direction) we're rotating 90.
             int directionInt = (int)direction;
             directionInt++;
             directionInt = directionInt % 4;
             direction = (Direction)directionInt;
+			}
+		}
 
-        }
+        // If this is noth the first corridor and the randomly selected direction is opposite to the previous corridor's direction...
+        //if (!firstCorridor && direction == oppositeDirection)
+        //{
+            
+
+        //}
 
         // Set a random length.
         corridorLength = length.Random;

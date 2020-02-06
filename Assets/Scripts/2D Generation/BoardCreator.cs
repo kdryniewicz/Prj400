@@ -108,9 +108,14 @@ public class BoardCreator : MonoBehaviour
                 // Setup the corridor based on the room that was just created.
                 corridors[i].SetupCorridor(rooms[i], corridorLength, roomWidth, roomHeight, columns, rows, false);
             }
+
+            if(rooms[i].xPos == 0 && rooms[i].yPos == 0)
+            {
+                string.Format("Room: {0}, Corridor: {1}, Rows: {2}, Columns: {3}", i, rooms[i].enteringCorridor, rows, columns);
+            }
             //if (i == rooms.Length * .5f)
             //{
-
+//Check the positions and if 0,0 then output to console. i, previous corridor, rows, cols
             //}
 
         }

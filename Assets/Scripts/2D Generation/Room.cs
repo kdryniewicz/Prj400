@@ -18,11 +18,14 @@ public class Room
         roomWidth = widthRange.Random;
         roomHeight = heightRange.Random;
 
+
+		//Does Direction need to be initialized? 
+		//enteringCorridor = 0;
+
         // Set the x and y coordinates so the room is roughly in the middle of the board.
         xPos = Mathf.RoundToInt(columns / 2f - roomWidth / 2f);
         yPos = Mathf.RoundToInt(rows / 2f - roomHeight / 2f);
     }
-
 
     // This is an overload of the SetupRoom function and has a corridor parameter that represents the corridor entering the room.
     public void SetupRoom(IntRange widthRange, IntRange heightRange, int columns, int rows, Corridor corridor)
@@ -33,11 +36,14 @@ public class Room
         // Set random values for width and height.
         roomWidth = widthRange.Random;
         roomHeight = heightRange.Random;
+        //Debug.Log("Before Clamping:\n" + "XPos: " + xPos + " YPos: " + yPos);
 
         switch (corridor.direction)
         {
+
             // If the corridor entering this room is going north...
             case Direction.North:
+
                 // ... the height of the room mustn't go beyond the board so it must be clamped based
                 // on the height of the board (rows) and the end of corridor that leads to the room.
                 roomHeight = Mathf.Clamp(roomHeight, 1, rows - corridor.EndPositionY);
@@ -74,5 +80,6 @@ public class Room
                 yPos = Mathf.Clamp(yPos, 0, rows - roomHeight);
                 break;
         }
+        //Debug.Log("AfterClamping:\nXPos: " + xPos + " YPos: " + yPos);
     }
 }
