@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public PlayerDir playerDir;
     public Vector2 prevPos;
     public bool playerIdle;
-
+    public bool playerAttacking = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
        
         rb2D.MovePosition(rb2D.position + movement * (speed * Time.fixedDeltaTime));
 
+  
         if (!(rb2D.position == prevPos))
         {
             playerIdle = false;
@@ -48,12 +49,19 @@ public class PlayerMovement : MonoBehaviour
         {
             playerIdle = true;
         }
+
         SetPlayerDir();
         UpdateAnimation();
         if (rb2D.position != prevPos)
         {
             prevPos = rb2D.position;
         }
+
+        if (Input.GetButtonUp("Fire1"))
+        {
+            animator.SetTrigger("playerAttack");
+        }
+
     }
 
     private void SetPlayerDir()
