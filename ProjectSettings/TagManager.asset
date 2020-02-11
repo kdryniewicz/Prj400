@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - Soda
   - FoodText
+  - Weapon
+  - Effect
   layers:
   - Default
   - TransparentFX
