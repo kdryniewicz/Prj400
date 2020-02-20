@@ -10,12 +10,13 @@ public class Destroy_ByAnimEnd : MonoBehaviour
 	{
 		if(gameObject.GetComponent<Animator>() != null)
 		{
-			lifetime = gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length;
+			lifetime = gameObject.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length;
 		}
 		else
 		{
 			Debug.LogWarning("No Animator Attached! Attach an Animator Component!");
 		}
+		Debug.Log("Lifetime of Effects object: " + lifetime);
 		Destroy(gameObject, lifetime);
 	}
 }

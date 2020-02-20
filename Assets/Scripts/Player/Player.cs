@@ -36,7 +36,7 @@ namespace ProceduralGeneration
 
             //Set the foodText to reflect the current player food total.
             //foodText.text = "Food: " + food;
-
+            setPlayerStats();
         }
 
 

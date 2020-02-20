@@ -74,7 +74,7 @@ MonoBehaviour:
     m_Max: 14
   corridorLength:
     m_Min: 6
-    m_Max: 40
+    m_Max: 12
   enemiesPerRoom:
     m_Min: 1
     m_Max: 4
