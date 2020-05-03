@@ -19,8 +19,15 @@ namespace ProceduralGeneration
 			//Get a component reference to the SpriteRenderer.
 			spriteRenderer = GetComponent<SpriteRenderer> ();
 		}
-		
-		
+
+
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (other.CompareTag("Fireball"))
+			{
+				other.gameObject.GetComponent<Fireball>().OnHit();
+			}
+		}
 		//DamageWall is called when the player attacks a wall.
 		public void DamageWall (int loss)
 		{

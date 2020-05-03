@@ -74,7 +74,7 @@ MonoBehaviour:
     m_Max: 14
   corridorLength:
     m_Min: 6
-    m_Max: 10
+    m_Max: 14
   enemiesPerRoom:
     m_Min: 1
     m_Max: 4
@@ -86,19 +86,11 @@ MonoBehaviour:
   - {fileID: 137908, guid: 41775b29042354678bcd58bb1a75871e, type: 3}
   - {fileID: 125636, guid: 74398dca0c1f64f34aab8ba7bdb6c527, type: 3}
   - {fileID: 177044, guid: ed4c829589732490894350b134530050, type: 3}
-  - {fileID: 109612, guid: 04993e7a7b0514f0c8857ff106529ce1, type: 3}
-  - {fileID: 127736, guid: 4cdf8ac85eff446d0a8fefbdc8c6569f, type: 3}
-  - {fileID: 110520, guid: 5535fd6cd705e4a79a1d5a4f114de5dc, type: 3}
-  - {fileID: 110520, guid: c18e9692903814865aa9a855aaa66df5, type: 3}
   wallTiles:
   - {fileID: 110520, guid: 2570048905bd94d6f8a99d13b80daf90, type: 3}
   - {fileID: 110520, guid: b86334000bc0f47ba8dd33ea88cfcdb1, type: 3}
   - {fileID: 110520, guid: 01ca47a83ebe24ca5a2f6b1d6dcd7481, type: 3}
   - {fileID: 110520, guid: 022eda2f1f0cb45e28ff6840b68928bc, type: 3}
-  - {fileID: 110520, guid: e1816487b15cd4c5fbd9587521e068ca, type: 3}
-  - {fileID: 110520, guid: 5ddc2d7828b2d462286f09274199ad9a, type: 3}
-  - {fileID: 110520, guid: 64139c47b57e34c5fa97fd79f8d25244, type: 3}
-  - {fileID: 110520, guid: 741804431f4d341cdae1f15b3896aeff, type: 3}
   outerWallTiles:
   - {fileID: 110520, guid: 7094f72151ec74f569c4e03f1ec0f8e7, type: 3}
   - {fileID: 110520, guid: b0ace21a29149403094422fb3bd96aa9, type: 3}

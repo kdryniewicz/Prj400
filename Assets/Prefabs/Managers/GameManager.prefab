@@ -1,0 +1,150 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &133658
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 433658}
+  - component: {fileID: 11433656}
+  - component: {fileID: 680096388024419340}
+  - component: {fileID: 6163758488023749059}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: GameManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &433658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133658}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &11433656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7d59e4dfb9c9404b9471de0c983feac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelStartDelay: 1
+  turnDelay: 0.1
+  playerFoodPoints: 100
+  level: 1
+  doingSetup: 1
+  stairsExist: 0
+  Stairs: {fileID: 110520, guid: cb0f3020bafec423aa31d0e491c4b811, type: 3}
+  effectsMgr: {fileID: 911057716479302637, guid: 607d975b9e85b894099e077e428a6ce0,
+    type: 3}
+  txDebug: {fileID: 0}
+  gameOver: 0
+  TotalScore: 0
+  enemiesKilled: 0
+--- !u!114 &680096388024419340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83ceebc40565e548a8c4a050193c505, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tasks: []
+  taskRange:
+    m_Min: 1
+    m_Max: 3
+  TaskAmount: 0
+  TaskGOs: []
+  TaskUI: {fileID: 4747397306243719657, guid: 5518079e9c5423e42bda753d6e4aa304, type: 3}
+  taskSpawnPoint: {fileID: 0}
+  distBetweenTasks: 50
+  possibleObjectives:
+  - {fileID: 11400000, guid: cb208151e9a70d84db1d037d9a68c0ae, type: 2}
+  - {fileID: 11400000, guid: aaf3af939bc7c5243b4bba31d1dd0325, type: 2}
+  - {fileID: 11400000, guid: 64b841eafb4323f4a94b3fc59ab1ca9d, type: 2}
+  - {fileID: 11400000, guid: 89642e6f55f8b7f4a9ac51d7b40c4e2d, type: 2}
+  - {fileID: 11400000, guid: bfa2dc718b1fabf499b277da3e0d87d0, type: 2}
+  - {fileID: 11400000, guid: 015e94544cd2c1c41af78efe85991d20, type: 2}
+  - {fileID: 11400000, guid: 28928abd1ca02a446b047c4abf368d88, type: 2}
+--- !u!114 &6163758488023749059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55165943fd49a4d469fb13db0a5005a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columns: 50
+  rows: 50
+  numRooms:
+    m_Min: 3
+    m_Max: 5
+  roomWidth:
+    m_Min: 3
+    m_Max: 11
+  roomHeight:
+    m_Min: 4
+    m_Max: 14
+  corridorLength:
+    m_Min: 6
+    m_Max: 12
+  enemiesPerRoom:
+    m_Min: 1
+    m_Max: 4
+  maxEnemiesForDungeon:
+    m_Min: 8
+    m_Max: 12
+  floorTiles:
+  - {fileID: 106160, guid: 038998774947c4a8fa170d5b4492a7dd, type: 3}
+  - {fileID: 137908, guid: 41775b29042354678bcd58bb1a75871e, type: 3}
+  - {fileID: 125636, guid: 74398dca0c1f64f34aab8ba7bdb6c527, type: 3}
+  - {fileID: 177044, guid: ed4c829589732490894350b134530050, type: 3}
+  wallTiles:
+  - {fileID: 110520, guid: 2570048905bd94d6f8a99d13b80daf90, type: 3}
+  - {fileID: 110520, guid: b86334000bc0f47ba8dd33ea88cfcdb1, type: 3}
+  - {fileID: 110520, guid: 01ca47a83ebe24ca5a2f6b1d6dcd7481, type: 3}
+  - {fileID: 110520, guid: 022eda2f1f0cb45e28ff6840b68928bc, type: 3}
+  outerWallTiles:
+  - {fileID: 110520, guid: 7094f72151ec74f569c4e03f1ec0f8e7, type: 3}
+  - {fileID: 110520, guid: b0ace21a29149403094422fb3bd96aa9, type: 3}
+  - {fileID: 110520, guid: e85c94355cc4641da919bd5d0ac956d4, type: 3}
+  player: {fileID: 146652, guid: 28b53fc28d3a140c392f0e2d919f9de1, type: 3}
+  enemies:
+  - {fileID: 195068, guid: ebfba08a213d34c46ba2b1947aeaea83, type: 3}
+  - {fileID: 161064, guid: 089a2f2c322ea40f9afdfaba0550c6d3, type: 3}
+  enemiesCreated: []
+  exitObject: {fileID: 110520, guid: cb0f3020bafec423aa31d0e491c4b811, type: 3}
+  objectivesToSpawn: []
+  ItemsRange:
+    m_Min: 1
+    m_Max: 2
+  itemsToSpawn:
+  - {fileID: 6477429505754559074, guid: d941b1abdf9163345baa9f607fa801bd, type: 3}
+  - {fileID: 3849887076584613923, guid: c878952ae2224b54e8e736254d142044, type: 3}
+  itemsAmount: 0
+  ObjectLimitPerRoom: 2

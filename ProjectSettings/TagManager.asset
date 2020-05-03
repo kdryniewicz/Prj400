@@ -12,6 +12,19 @@ TagManager:
   - Weapon
   - Effect
   - Wall
+  - Floor
+  - HealthHUD
+  - ManaHUD
+  - MoneyHUD
+  - Bar
+  - Fireball
+  - GameManager
+  - tasksDisplay
+  - OuterWall
+  - LvImg
+  - UIObject
+  - txDebug
+  - Collectable
   layers:
   - Default
   - TransparentFX
@@ -57,4 +70,7 @@ TagManager:
     locked: 0
   - name: Units
     uniqueID: 3393972251
+    locked: 0
+  - name: Projectiles
+    uniqueID: 2084075865
     locked: 0

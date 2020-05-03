@@ -23,6 +23,7 @@ public class StartGameBtn : MonoBehaviour
 
     void StartGame()
     {
-        SceneManager.LoadScene("GameWorld");
+        SceneManager.LoadScene("GameWorld", LoadSceneMode.Single);
+
     }
 }

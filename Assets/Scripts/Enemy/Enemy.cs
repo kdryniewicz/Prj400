@@ -26,13 +26,15 @@ namespace ProceduralGeneration
 		public bool cantMove = false;
 		public float bounceBackRate = 5f;
 		public GameObject Effect;
+        public string enemyName;
+
 		//Start overrides the virtual Start function of the base class.
 		void Start()
 		{
 			//Register this enemy with our instance of GameManager by adding it to a list of Enemy objects. 
 			//This allows the GameManager to issue movement commands.
 			GameManager.instance.AddEnemyToList(this);
-
+            
 			//Get and store a reference to the attached Animator component.
 			animator = GetComponent<Animator>();
 
@@ -42,24 +44,47 @@ namespace ProceduralGeneration
 			OrigPos = transform.position;
 
 			rb2d = GetComponent<Rigidbody2D>();
+            Effect = GameManager.instance.effectsMgr;
+            enemyName = gameObject.name;
 		}
 
 
 
 
 
-
+        private void CheckTasks()
+        {
+            if(Task_Handler.tasks_instance != null)
+            {
+                if(Task_Handler.tasks_instance.tasks != null)
+                {
+                    //To see if enemy is part of a task, that player needs to do, we first get the list of tasks.
+                    foreach (Task t in Task_Handler.tasks_instance.tasks)
+                    {
+                        //First we check if the task we're iterating is a Kill type since that's only one involving enemies
+                        if (t.goalToComplete.goalToDo == Category.Kill)
+                        {
+                            if ((t.goalToComplete.whatToAchieve.SpawnableItem.name + "(Clone)").ToUpper() == enemyName.ToUpper())
+                            {
+                                t.goalToComplete.current++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 		private void FixedUpdate()
 		{
 			//Check Enemy's health if he's still alive
 			if (EnemyStats.Health <= 0)
 			{
 				//Create an effect object for animation
-				Instantiate(Effect, transform.parent);
+				Instantiate(Effect, transform.position, transform.rotation);
 
 				if (GameObject.FindWithTag("Effect") != null)
 				{
-					GameObject.FindWithTag("Effect").GetComponent<Animator>().SetTrigger("Damage");
+					GameObject.FindWithTag("Effect").GetComponent<Animator>().SetTrigger("Explosion");
+                    CheckTasks();
 					//Get rid of enemy object
 					Destroy(gameObject);
 
@@ -76,13 +101,13 @@ namespace ProceduralGeneration
 			if (CheckPlayerDetected())
 			{
 				//Check if Enemy's distance to player is above certain value in order to make it stop once it's close enough to player (in order to attack)
-				if(Vector2.Distance(rb2d.position, target.position) > 0.75)
+				if(Vector2.Distance(rb2d.position, target.position) > 0.98)
 					{
 						//Move Enemy's position.
 						rb2d.MovePosition(Vector2.MoveTowards(transform.position, target.position, (EnemyStats.Speed * Time.deltaTime)));
 						//Debug.Log(string.Format("Player was detected inside detection radius of {0}", gameObject.name));
 					}
-					if(Vector2.Distance(rb2d.position, target.position) <= 0.75)
+					if(Vector2.Distance(rb2d.position, target.position) <= 0.98)
 					{
 						if(!isAttacking)
 						{
@@ -111,8 +136,8 @@ namespace ProceduralGeneration
 
 		IEnumerator ReturnToPosition()
 		{
-			//Check if Enenmy has moved at all.
-			if (Vector2.Distance(rb2d.position, OrigPos) > 0.1)
+			//Check if Enemy has moved at all.
+			if (Vector2.Distance(rb2d.position, OrigPos) > 1)
 			{
 				//Give enemy a little time to make sure player has really left.
 				yield return new WaitForSeconds(DelayToReturn);
@@ -134,25 +159,28 @@ namespace ProceduralGeneration
 		
 		bool CheckPlayerDetected()
 		{
-			ContactFilter2D filter = new ContactFilter2D();
+            if(GameObject.FindWithTag("Player") != null)
+            {
+                ContactFilter2D filter = new ContactFilter2D();
 
-			List<Collider2D> results = new List<Collider2D>();
-			if (Physics2D.OverlapCircle(transform.position, DetectionRadius, filter, results) > 0)
-			{
-				foreach (Collider2D result in results)
-				{
-					if(result.tag == "Player")
-					{
-						return true;
-					}
-				}
-			}
+                List<Collider2D> results = new List<Collider2D>();
+                if (Physics2D.OverlapCircle(transform.position, DetectionRadius, filter, results) > 0)
+                {
+                    foreach (Collider2D result in results)
+                    {
+                        if (result.CompareTag("Player"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
 			return false;
 		}
 
 		private void OnCollisionEnter2D(Collision2D collision)
 		{
-			if (collision.gameObject.tag == "Wall")
+			if (collision.gameObject.CompareTag("Wall"))
 			{
 				StartCoroutine(BounceBack(collision.gameObject));
 			}
@@ -162,14 +190,22 @@ namespace ProceduralGeneration
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			
-			if (other.gameObject.tag == "Weapon")
+			if (other.gameObject.CompareTag("Weapon"))
 			{
 					//other.gameObject.GetComponent<Animator>().SetTrigger("EnemyHurt");
 					gameObject.GetComponent<Enemy>().EnemyStats.Health -= other.gameObject.GetComponentInParent<Player>().PlayerStats.Damage;
 					StartCoroutine(DisplayDamage(other.gameObject.GetComponentInParent<Player>().gameObject));
 
 			}
-		}
+             else if (other.gameObject.CompareTag("Fireball"))
+            {
+                //other.gameObject.GetComponent<Animator>().SetTrigger("EnemyHurt");
+                gameObject.GetComponent<Enemy>().EnemyStats.Health -= other.gameObject.GetComponentInParent<Fireball>().projStats.Damage;
+                other.gameObject.GetComponent<Fireball>().OnHit();
+                StartCoroutine(DisplayDamage(other.gameObject));
+
+            }
+        }
 		IEnumerator BounceBack(GameObject other)
 		{
 			cantMove = true;

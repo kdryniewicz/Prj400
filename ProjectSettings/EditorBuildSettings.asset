@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: ad72e21019d959a45878bc920c99e1b4
-  - enabled: 1
     path: Assets/Scenes/GameWorld.unity
     guid: 329f4be6b831e43008ec1ddeaae85de9
+  - enabled: 1
+    path: Assets/Scenes/CABossRoom.unity
+    guid: 4cdafc889b8dc0d42a6785bec9513839
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d7f0ff595bc585c4e83547a1b2a1214a,
       type: 2}

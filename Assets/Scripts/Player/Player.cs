@@ -7,6 +7,8 @@ namespace ProceduralGeneration
 {
 	public class Player : MonoBehaviour
     {
+        public static Player playerInstance = null;				//Static instance of GameManager which allows it to be accessed by any other script.
+
         public float restartLevelDelay = 1f;        //Delay time in seconds to restart level.
         public AudioClip moveSound1;                //1 of 2 Audio clips to play when player moves.
         public AudioClip moveSound2;                //2 of 2 Audio clips to play when player moves.
@@ -29,6 +31,22 @@ namespace ProceduralGeneration
         //Start overrides the Start function of MovingObject
         void Start()
         {
+
+            //Check if instance already exists
+            if (playerInstance == null)
+
+                //if not, set instance to this
+                playerInstance = this;
+
+            //If instance already exists and it's not this:
+            else if (playerInstance != this)
+
+                //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a Player Object.
+                Destroy(gameObject);
+
+            //Sets this to not be destroyed when reloading scene
+            DontDestroyOnLoad(gameObject);
+
             //Get a component reference to the Player's animator component
             animator = GetComponentInChildren<Animator>();
 
@@ -37,6 +55,8 @@ namespace ProceduralGeneration
             //Set the foodText to reflect the current player food total.
             //foodText.text = "Food: " + food;
             setPlayerStats();
+
+
         }
 
 
@@ -44,8 +64,8 @@ namespace ProceduralGeneration
         {
             PlayerStats = new Statistics()
             {
-                MaxHealth = 5,
-                MaxMana = 5,
+                MaxHealth = 10,
+                MaxMana = 4,
                 Speed = 5f,
                 Damage = 1f,
             };
@@ -61,83 +81,101 @@ namespace ProceduralGeneration
            // GameManager.instance.playerFoodPoints = food;
         }
 
-
-        private void Update()
+        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
-
+            if (gameObject.GetComponent<PlayerMovement>().playerLock)
+            {
+                GetComponent<PlayerMovement>().playerLock = false;
+                enabled = true;
+            }
         }
-
-
-
-
 
         //OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
         private void OnTriggerEnter2D(Collider2D other)
         {
-
-
             //Check if the tag of the trigger collided with is Exit.
-            if (other.tag == "Exit")
+            if (other.CompareTag("Exit"))
             {
-                //Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
-                Invoke("Restart", restartLevelDelay);
+                if (!GameManager.instance.doingSetup)
+                {
+                    //If player has reached the Boss level.
+                    if (GameManager.instance.level == 3)
+                    {
+                        GetComponent<PlayerMovement>().playerLock = true;
+                        GameManager.instance.GetComponent<BoardCreator>().enabled = false;
+                        SceneManager.LoadScene("CABossRoom", LoadSceneMode.Single);
+                        enabled = false;
+                    }
+                    else
+                    {
+                        GetComponent<PlayerMovement>().playerLock = true;
+                        //Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
+                        GameObject.FindWithTag("GameManager").GetComponent<GameManager>().Invoke("Restart", restartLevelDelay);
+                        //Disable the player object since level is over.
+                        enabled = false;
 
-                //Disable the player object since level is over.
-                enabled = false;
+                    }
+                }
             }
-
-            //Check if the tag of the trigger collided with is Food.
-            else if (other.tag == "Food")
+            else if (other.CompareTag("Collectable"))
             {
-               
-            }
+                Debug.Log("Collectible was found!");
+                if (other.GetComponent<Collectible>().collType == CollectibleType.Collectible)
+                {
+                    GameManager.instance.TotalScore += other.GetComponent<Collectible>().score;
+                    foreach (Task t in Task_Handler.tasks_instance.tasks)
+                    {
+                        if (t.goalToComplete.whatToAchieve.SpawnableItem == other.GetComponent<Collectible>().gameObject)
+                        {
+                            t.goalToComplete.current++;
+                            break;
+                        }
+                    }
 
-            //Check if the tag of the trigger collided with is Soda.
-            else if (other.tag == "Soda")
-            {
+                }
+                else if (other.GetComponent<Collectible>().collType == CollectibleType.HealthPotion)
+                {
+                    if (Player.playerInstance.PlayerStats.Health < Player.playerInstance.PlayerStats.MaxHealth + other.GetComponent<Collectible>().healAmount)
+                    {
+                        Player.playerInstance.PlayerStats.Health = Player.playerInstance.PlayerStats.MaxHealth;
+                    }
+                    else
+                    {
+                        Player.playerInstance.PlayerStats.Health += other.GetComponent<Collectible>().healAmount;
+                    }
+                }
+                else if (other.GetComponent<Collectible>().collType == CollectibleType.ManaPotion)
+                {
+                    if (Player.playerInstance.PlayerStats.Mana < Player.playerInstance.PlayerStats.MaxMana + other.GetComponent<Collectible>().healAmount)
+                    {
+                        Player.playerInstance.PlayerStats.Mana = Player.playerInstance.PlayerStats.MaxMana;
+                    }
+                    else
+                    {
+                        Player.playerInstance.PlayerStats.Mana += other.GetComponent<Collectible>().healAmount;
+                    }
+                }
+                Destroy(other.gameObject);
 
             }
         }
 
-
-        //Restart reloads the scene when called.
-        private void Restart()
-        {
-            //Load the last scene loaded, in this case Main, the only scene in the game. And we load it in "Single" mode so it replace the existing one
-            //and not load all the scene object in the current scene.
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-        }
-
-
-        //LoseFood is called when an enemy attacks the player.
-        //It takes a parameter loss which specifies how many points to lose.
-        public void LoseFood(int loss)
-        {
-            //Set the trigger for the player animator to transition to the playerHit animation.
-            animator.SetTrigger("playerHurt");
-
-           
-
-            //Check to see if game has ended.
-            CheckIfGameOver();
-        }
-
-
-        //CheckIfGameOver checks if the player is out of food points and if so, ends the game.
+        //CheckIfGameOver checks if the player is out of health points and if so, ends the game.
         private void CheckIfGameOver()
         {
-            ////Check if food point total is less than or equal to zero.
-            //if (food <= 0)
-            //{
-            //    //Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
-            //    SoundManager.instance.PlaySingle(gameOverSound);
+            // Check if food point total is less than or equal to zero.
+            if (PlayerStats.Health <= 0)
+            {
+                
+                //Call the PlaySingle function of SoundManager and pass it the gameOverSound as the audio clip to play.
+                SoundManager.instance.PlaySingle(gameOverSound);
 
-            //    //Stop the background music.
-            //    SoundManager.instance.musicSource.Stop();
+                //Stop the background music.
+                SoundManager.instance.musicSource.Stop();
 
-            //    //Call the GameOver function of GameManager.
-            //    GameManager.instance.GameOver();
-            //}
+                //Call the GameOver function of GameManager.
+                GameManager.instance.GameOver();
+            }
         }
     }
 }

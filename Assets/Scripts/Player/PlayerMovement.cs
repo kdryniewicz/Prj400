@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using ProceduralGeneration;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -12,9 +14,18 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 prevPos;
     public bool playerIdle;
     public bool playerAttacking = false;
+    public bool playerLock = false;
+    float prevSpeed;
+
+    //Fireball shooting
+    public Transform fbSpawn;
+    public GameObject Fireball;
+    public float DelayBetweenShots = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
+        playerLock = false;
         if (rb2D == null)
         {
             rb2D = gameObject.GetComponent<Rigidbody2D>();
@@ -26,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
         playerDir = PlayerDir.South;
         animator.SetTrigger("playerIdle");
         animator.SetTrigger("playerDirDown");
+        prevSpeed = GetComponent<Player>().PlayerStats.Speed;
+
     }
 
     // Update is called once per frame
@@ -35,50 +48,84 @@ public class PlayerMovement : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
     }
 
+    private void OnLevelWasLoaded(int level)
+    {
+        
+    }
+
     private void FixedUpdate()
     {
-       
-        rb2D.MovePosition(rb2D.position + movement * (speed * Time.fixedDeltaTime));
+        if (!playerLock)
+        {
+            rb2D.MovePosition(rb2D.position + movement * (GetComponent<Player>().PlayerStats.Speed * Time.fixedDeltaTime));
 
   
-        if (!(rb2D.position == prevPos))
-        {
-            playerIdle = false;
-        }
-        else
-        {
-            playerIdle = true;
-        }
+            if (!(rb2D.position == prevPos))
+            {
+                playerIdle = false;
+            }
+            else
+            {
+                playerIdle = true;
+            }
 
-        SetPlayerDir();
-        UpdateAnimation();
-        if (rb2D.position != prevPos)
-        {
-            prevPos = rb2D.position;
-        }
+            SetPlayerDir();
+            UpdateAnimation();
+            if (rb2D.position != prevPos)
+            {
+                prevPos = rb2D.position;
+            }
 
-        if (Input.GetButtonUp("Fire1"))
-        {
-            animator.SetTrigger("playerAttack");
+            if (Input.GetButtonUp("Fire1"))
+            {
+                animator.SetTrigger("playerAttack");
+            }
+            else if (Input.GetButtonUp("Fire2"))
+            {
+                StartCoroutine(CreateFireball());
+            }
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                GetComponent<Player>().PlayerStats.Speed = GetComponent<Player>().PlayerStats.Speed * 2;
+            }
+            else
+            {
+                GetComponent<Player>().PlayerStats.Speed = prevSpeed;
+            }
         }
 
     }
 
+
+    IEnumerator CreateFireball()
+    {
+        if (GetComponent<Player>().PlayerStats.Mana > 0)
+        {
+            GameObject go = Instantiate(Fireball, fbSpawn.position, Quaternion.identity);
+            go.GetComponentInChildren<Fireball>().Target = GameObject.FindWithTag("MainCamera").GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
+            Debug.Log(string.Format("Fireball created at: {0}, going towards {1}", go.transform.position, go.GetComponentInChildren<Fireball>().Target));
+            GetComponent<Player>().PlayerStats.Mana -= 1;
+            yield return new WaitForSeconds(DelayBetweenShots);
+        }
+    }
     private void SetPlayerDir()
     {
-        if (rb2D.position.x > prevPos.x) // Check if player is going right
+        float dist = 0.01f;
+        //Debug.Log("Distance between PrevPos & Pos is: " + Vector2.Distance(rb2D.position, prevPos));
+        if ((rb2D.position.x > prevPos.x) && (Vector2.Distance(rb2D.position, prevPos) > dist)) // Check if player is going right
         {
             playerDir = PlayerDir.East;
         }
-        else if (rb2D.position.y > prevPos.y) //check if player is going up
+        else if ((rb2D.position.y > prevPos.y) && (Vector2.Distance(rb2D.position, prevPos) > dist)) //check if player is going up
         {
             playerDir = PlayerDir.North;
         }
-        else if (rb2D.position.x < prevPos.x) //Check if player is going left
+        else if ((rb2D.position.x < prevPos.x) && (Vector2.Distance(rb2D.position, prevPos) > dist)) //Check if player is going left
         {
             playerDir = PlayerDir.West;
         }
-        else if (rb2D.position.y < prevPos.y) //Check if player is going down
+        else if ((rb2D.position.y < prevPos.y) && (Vector2.Distance(rb2D.position, prevPos) > dist)) //Check if player is going down
         {
             playerDir = PlayerDir.South;
         }
@@ -115,6 +162,13 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetTrigger("playerWalk");
             //Debug.Log("Player is walking!");
+        }
+        if (GetComponent<Player>().PlayerStats.Health <= 0)
+        {
+            playerLock = true;
+            animator.SetTrigger("playerDead");
+            GetComponent<Player>().Invoke("CheckIfGameOver", 0.9f);
+
         }
     }
 

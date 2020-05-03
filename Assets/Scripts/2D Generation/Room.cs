@@ -1,19 +1,25 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
+[System.Serializable]
 public class Room
 {
+    public string Name;
     public int xPos;                      // The x coordinate of the lower left tile of the room.
     public int yPos;                      // The y coordinate of the lower left tile of the room.
     public int roomWidth;                     // How many tiles wide the room is.
     public int roomHeight;                    // How many tiles high the room is.
     public Direction enteringCorridor;    // The direction of the corridor that is entering this room.
-    public Vector2[] TilePositions;
-    public Vector2[] EnemyPositions;
-    public int enemiesInRoom;
+    public Vector2[] TilePositions;        //The positions of all tiles in the room
+    public Vector2[] EnemyPositions;        //the positions of all enemies in the room
+    public Vector2[] ObjectiveObjsPositions; //The positions of any objectives in the room
+    public int enemiesInRoom;               //The number of all enemies in the room
+
 
     // This is used for the first room.  It does not have a Corridor parameter since there are no corridors yet.
-    public void SetupRoom(IntRange widthRange, IntRange heightRange, int columns, int rows)
+    public void SetupRoom(int roomID, IntRange widthRange, IntRange heightRange, int columns, int rows)
     {
+        Name = string.Format("Room {0}", roomID);
         // Set a random width and height.
         roomWidth = widthRange.Random;
         roomHeight = heightRange.Random;
@@ -28,7 +34,7 @@ public class Room
     }
 
     // This is an overload of the SetupRoom function and has a corridor parameter that represents the corridor entering the room.
-    public void SetupRoom(IntRange widthRange, IntRange heightRange, int columns, int rows, Corridor corridor)
+    public void SetupRoom(int roomID, IntRange widthRange, IntRange heightRange, int columns, int rows, Corridor corridor)
     {
         // Set the entering corridor direction.
         enteringCorridor = corridor.direction;
@@ -80,6 +86,5 @@ public class Room
                 yPos = Mathf.Clamp(yPos, 0, rows - roomHeight);
                 break;
         }
-        //Debug.Log("AfterClamping:\nXPos: " + xPos + " YPos: " + yPos);
     }
 }
